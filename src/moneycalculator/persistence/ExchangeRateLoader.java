@@ -1,7 +1,7 @@
 package moneycalculator.persistence;
 
-import java.util.Currency;
 import java.util.Date;
+import moneycalculator.model.Currency;
 import moneycalculator.model.ExchangeRate;
 
 public interface ExchangeRateLoader {
