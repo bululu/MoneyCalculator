@@ -65,7 +65,7 @@ public class DBExchangeRateLoader implements ExchangeRateLoader {
             DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
             Connection connection= DriverManager.getConnection(URL, USER, PASSWORD);
             Statement statement= connection.createStatement();
-            ResultSet resultset= statement.executeQuery("select cambio from cambio_eur_a where rownum<=1 and divisa='"+code+"' and alta order by alta='"+date.toString()+"' desc");
+            ResultSet resultset= statement.executeQuery("select cambio from cambio_eur_a where rownum<=1 and divisa='"+code+"' and alta='"+date.toString()+"' order by alta desc");
             resultset.next();
             cambio=resultset.getDouble("Cambio");
             connection.close();
