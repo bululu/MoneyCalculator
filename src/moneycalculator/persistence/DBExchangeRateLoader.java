@@ -31,8 +31,15 @@ public class DBExchangeRateLoader implements ExchangeRateLoader {
 
     @Override
     public ExchangeRate load(Date date, Currency from, Currency to) {
-        ExchangeRate er = null;
-        return er;
+        double eurovsfrom=1;
+        double eurovsto=1;
+       
+            if (!from.getCode().equals("EUR"))
+                eurovsfrom=getCambioVsEuroUpToDate(from.getCode(),date);
+            if (!to.getCode().equals("EUR"))
+                eurovsto=getCambioVsEuroUpToDate(to.getCode(),date);
+            
+        return new ExchangeRate(date, from, to, eurovsto/eurovsfrom);
     }
 
     private double getCambioVsEuro(String code) {        
@@ -50,5 +57,21 @@ public class DBExchangeRateLoader implements ExchangeRateLoader {
             Logger.getLogger(DBExchangeRateLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return cambio;
-  }
+    }
+    
+      private double getCambioVsEuroUpToDate(String code, Date date) {        
+        double cambio=1;
+        try {
+            DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+            Connection connection= DriverManager.getConnection(URL, USER, PASSWORD);
+            Statement statement= connection.createStatement();
+            ResultSet resultset= statement.executeQuery("select cambio from cambio_eur_a where rownum<=1 and divisa='"+code+"' and alta order by alta='"+date.toString()+"' desc");
+            resultset.next();
+            cambio=resultset.getDouble("Cambio");
+            connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBExchangeRateLoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return cambio;
+    }
 }
