@@ -9,10 +9,27 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class ApplicationFrame extends JFrame {
+    private ActionListenerFactory factory;
+    private CurrencyDialog cDialog;
+    private MoneyDialog mDialog;
+    private MoneyViewer viewer;
 
-    public ApplicationFrame() {
+    public CurrencyDialog getcDialog() {
+        return cDialog;
+    }
+
+    public MoneyDialog getmDialog() {
+        return mDialog;
+    }
+
+    public MoneyViewer getViewer() {
+        return viewer;
+    }
+
+    public ApplicationFrame(ActionListenerFactory factory) {
         this.setTitle("Money Calculator");
-        this.setMinimumSize(new Dimension(300,130));
+        this.factory= factory;
+        this.setMinimumSize(new Dimension(300,170));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.createComponents();
         this.setVisible(true);
@@ -25,8 +42,15 @@ public class ApplicationFrame extends JFrame {
 
     private JPanel createContent() {
         JPanel panel= new JPanel();
-        panel.add(new MoneyDialogPanel());
-        panel.add(new CurrencyDialogPanel());
+        MoneyDialogPanel mPanel= new MoneyDialogPanel();
+        CurrencyDialogPanel cPanel= new CurrencyDialogPanel();
+        MoneyViewerPanel mViewer= new MoneyViewerPanel();
+        mDialog=mPanel;
+        cDialog=cPanel;
+        viewer=mViewer;
+        panel.add(mPanel);
+        panel.add(cPanel);
+        panel.add(mViewer);
         return panel;
     }
 
@@ -40,11 +64,13 @@ public class ApplicationFrame extends JFrame {
 
     private JButton createCalculateButton() {
     JButton button=new JButton("Calculate");
+        button.addActionListener(factory.createActionListener("calculate"));
         return button;
     }
 
     private JButton createExitButton() {
     JButton button=new JButton("Exit");
+        button.addActionListener(factory.createActionListener("exit"));
         return button;
     }
     

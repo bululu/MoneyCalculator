@@ -1,14 +1,15 @@
 package moneycalculator.ui;
 
 import java.awt.FlowLayout;
-import java.awt.PopupMenu;
-import javax.swing.ComboBoxModel;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import moneycalculator.model.Currency;
 import moneycalculator.model.CurrencySet;
 
 public class CurrencyDialogPanel extends JPanel implements CurrencyDialog{
+    private String currency;
 
     public CurrencyDialogPanel() {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -19,7 +20,13 @@ public class CurrencyDialogPanel extends JPanel implements CurrencyDialog{
     
     @Override
     public Currency getCurrency() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    CurrencySet CS=CurrencySet.getInstance();
+        
+        for (Currency currencyaux : CS) {
+            if (currencyaux.getCode().equals(currency))
+                return currencyaux;        
+        }
+        return null;
     }
 
     private void createComponents() {
@@ -31,15 +38,26 @@ public class CurrencyDialogPanel extends JPanel implements CurrencyDialog{
     CurrencySet CS=CurrencySet.getInstance();
     String[] currencyNames= new String[CS.size()];
         int i=0;
-        for (Currency currency : CS) {
-            currencyNames[i]=currency.getCode();
+        for (Currency currencyaux : CS) {
+            currencyNames[i]=currencyaux.getCode();
             i++;            
-        }        
+        }
+        currency=currencyNames[0];
         return currencyNames;
     }
 
     private JComboBox createCombo() {
-        return new JComboBox(getCurrencyNames());
+        JComboBox combo = new JComboBox(getCurrencyNames());
+        combo.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() != ItemEvent.SELECTED)
+                    return;
+                currency= (String) e.getItem();
+            }
+        });
+        return combo;
     }
        
 }
