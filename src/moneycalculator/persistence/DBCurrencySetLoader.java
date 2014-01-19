@@ -12,7 +12,7 @@ import moneycalculator.model.Currency;
 import moneycalculator.model.CurrencySet;
 
 public class DBCurrencySetLoader implements CurrencySetLoader {
-    private static final String URL="jdbc:oracle:thin:@192.168.211.17:1521:orcl";
+    private static final String URL="jdbc:oracle:thin:@192.168.211.13:1521:orcl";
     private static final String USER="system";
     private static final String PASSWORD="orcl";
 
